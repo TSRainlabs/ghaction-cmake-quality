@@ -1,6 +1,6 @@
 ---
 name: CI
-on: 
+on:
   push:
     branches:
       - master
@@ -19,9 +19,14 @@ jobs:
           repository: rainlabs/cmake-quality-action
           tag_with_ref: true
 
-  test-action-demo:
-    name: "Test action with local demo project"
+  test-action-demo-clang:
+    name: "Test action with local demo project on Clang ${{ matrix.version }}"
     needs: build-docker
+
+    strategy:
+      matrix:
+        version: [11, 12, 13] #14 is broken :(
+
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@main
@@ -32,14 +37,40 @@ jobs:
           path: demo
       - uses: ./action/
         with:
-          dependencies: clang-8 clang-9
-          cmake_configure_environment: "CC=clang-9 CXX=clang++-9"
+          cmake_configure_environment: "CC=clang-${{ matrix.version }} CXX=clang++-${{ matrix.version }}"
           source_directory: demo
           build_directory: demo-out
 
-  test-action-googletest:
-    name: "Test action with google test"
+  test-action-demo-gcc:
+    name: "Test action with local demo project on GCC"
     needs: build-docker
+
+    strategy:
+      matrix:
+        version: [9, 10, 11, 12]
+
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@main
+        with:
+          path: action
+      - uses: actions/checkout@main
+        with:
+          path: demo
+      - uses: ./action/
+        with:
+          cmake_configure_environment: "CC=gcc-${{ matrix.version }} CXX=g++-${{ matrix.version }}"
+          source_directory: demo
+          build_directory: demo-out
+
+  test-action-googletest-clang:
+    name: "Test action with google test on Clang"
+    needs: build-docker
+
+    strategy:
+      matrix:
+        version: [11, 12, 13] #14 is broken :(
+
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@main
@@ -48,11 +79,37 @@ jobs:
       - uses: actions/checkout@main
         with:
           repository: google/googletest
-          path: googletest 
+          path: googletest
       - uses: ./action/
         with:
-          dependencies: clang-8 clang-9
-          cmake_configure_environment: "CC=clang-9 CXX=clang++-9"
+          cmake_configure_environment: "CC=clang-${{ matrix.version }} CXX=clang++-${{ matrix.version }}"
+          source_directory: googletest
+          build_directory: googletest-out
+          cmake_configure_extra_args: "-Dgmock_build_tests=ON"
+          ctest_enable: true
+          cmake_install_enable: true
+          cmake_install_directory: googletest-install
+
+  test-action-googletest-gcc:
+    name: "Test action with google test on GCC"
+    needs: build-docker
+
+    strategy:
+      matrix:
+        version: [9, 10, 11, 12]
+
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@main
+        with:
+          path: action
+      - uses: actions/checkout@main
+        with:
+          repository: google/googletest
+          path: googletest
+      - uses: ./action/
+        with:
+          cmake_configure_environment: "CC=gcc-${{ matrix.version }} CXX=g++-${{ matrix.version }}"
           source_directory: googletest
           build_directory: googletest-out
           cmake_configure_extra_args: "-Dgmock_build_tests=ON"
