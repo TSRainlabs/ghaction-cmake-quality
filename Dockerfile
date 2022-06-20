@@ -9,7 +9,8 @@ RUN set -x -e; \
 RUN set -x -e; \
     wget https://apt.llvm.org/llvm.sh; \
     chmod +x llvm.sh; \
-    ./llvm.sh all; \
+    ./llvm.sh 13 all; \
+    ./llvm.sh 14 all; \
     rm -rf /var/lib/apt/lists/*
 
 RUN set -x -e; \
@@ -21,7 +22,14 @@ RUN set -x -e; \
         cmake pkg-config make ninja-build \
         # GCC compilers
         gcc-9 gcc-10 gcc-11 gcc-12 \
-        g++-9 g++-10 gcc-11 gcc-12 \
+        g++-9 g++-10 g++11 g++12 \
+        # Clang compilers (except ones installed by script above)
+        clang-11 clang-12 \
+        # Clang tools
+        clang-tidy-11 clang-tidy-12 \
+        clang-format-11 clang-format-12 \
+        # LLVM
+        llvm-11 llvm-12 \
         gcovr \
         # Coverage report upload
         curl \
