@@ -9,7 +9,8 @@ RUN set -x -e; \
 RUN set -x -e; \
     wget https://apt.llvm.org/llvm.sh; \
     chmod +x llvm.sh; \
-    ./llvm.sh all; \
+    ./llvm.sh 13 all; \
+    ./llvm.sh 14 all; \
     rm -rf /var/lib/apt/lists/*
 
 RUN set -x -e; \
@@ -20,13 +21,19 @@ RUN set -x -e; \
         # build
         cmake pkg-config make ninja-build \
         # GCC compilers
-<<<<<<< HEAD
         gcc-9 gcc-10 gcc-11 gcc-12 \
-        g++-9 g++-10 gcc-11 gcc-12 \
+<<<<<<< HEAD
+        g++-9 g++-10 g++11 g++12 \
 =======
-        gcc-5 gcc-6 gcc-7 gcc-8 gcc-9 gcc-10 gcc-11 gcc-12\
-        g++-5 g++-6 g++-7 g++-8 g++-9 g++-10 gcc-11 gcc-12\
->>>>>>> adc795d (Add GCC 11 and GCC 12 compilers)
+        g++-9 g++-10 g++-11 g++-12 \
+>>>>>>> 00fa1cd (Fix actual installation of all compilers)
+        # Clang compilers (except ones installed by script above)
+        clang-11 clang-12 \
+        # Clang tools
+        clang-tidy-11 clang-tidy-12 \
+        clang-format-11 clang-format-12 \
+        # LLVM
+        llvm-11 llvm-12 \
         gcovr \
         # Coverage report upload
         curl \
@@ -62,7 +69,7 @@ RUN set -x -e; \
     apt-get -y install --no-install-recommends mingw-w64; \
     # Download packages
     wget -q https://boostorg.jfrog.io/artifactory/main/release/1.74.0/source/boost_1_74_0.tar.gz -P ${SOURCES_DIR}; \
-    wget -q https://zlib.net/zlib-1.2.11.tar.gz -P ${SOURCES_DIR} ; \
+    wget -q https://zlib.net/zlib-1.2.12.tar.gz -P ${SOURCES_DIR} ; \
     wget -q https://www.openssl.org/source/openssl-1.1.1h.tar.gz -P ${SOURCES_DIR} ; \
     # Extract packages
     for f in ${SOURCES_DIR}/*.tar.gz; do tar xf "$f" -C ${SOURCES_DIR}; done; \
@@ -100,6 +107,7 @@ RUN set -x -e; \
 
 # Python 3.8
 RUN set -x -e; \
+    add-apt-repository ppa:deadsnakes/ppa -y; \
     apt-get -y update; \
     apt-get -y install --no-install-recommends python3.8 python3.8-distutils; \
     wget -q https://bootstrap.pypa.io/get-pip.py; \

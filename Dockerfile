@@ -22,7 +22,7 @@ RUN set -x -e; \
         cmake pkg-config make ninja-build \
         # GCC compilers
         gcc-9 gcc-10 gcc-11 gcc-12 \
-        g++-9 g++-10 g++11 g++12 \
+        g++-9 g++-10 g++-11 g++-12 \
         # Clang compilers (except ones installed by script above)
         clang-11 clang-12 \
         # Clang tools
