@@ -65,7 +65,7 @@ RUN set -x -e; \
     apt-get -y install --no-install-recommends mingw-w64; \
     # Download packages
     wget -q https://boostorg.jfrog.io/artifactory/main/release/1.74.0/source/boost_1_74_0.tar.gz -P ${SOURCES_DIR}; \
-    wget -q https://zlib.net/zlib-1.2.12.tar.gz -P ${SOURCES_DIR} ; \
+    wget -q https://zlib.net/zlib-1.2.13.tar.gz -P ${SOURCES_DIR} ; \
     wget -q https://www.openssl.org/source/openssl-1.1.1h.tar.gz -P ${SOURCES_DIR} ; \
     # Extract packages
     for f in ${SOURCES_DIR}/*.tar.gz; do tar xf "$f" -C ${SOURCES_DIR}; done; \
